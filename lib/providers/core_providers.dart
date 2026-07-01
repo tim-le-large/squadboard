@@ -7,6 +7,7 @@ import '../models/workspace.dart';
 import '../repositories/auth_repository.dart';
 import '../repositories/chat_repository.dart';
 import '../repositories/comment_repository.dart';
+import '../repositories/demo_seed_repository.dart';
 import '../repositories/ticket_repository.dart';
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
@@ -38,6 +39,10 @@ final commentRepositoryProvider = Provider<CommentRepository>((ref) {
 
 final chatRepositoryProvider = Provider<ChatRepository>((ref) {
   return ChatRepository(ref.watch(firestoreProvider));
+});
+
+final demoSeedRepositoryProvider = Provider<DemoSeedRepository>((ref) {
+  return DemoSeedRepository(ref.watch(firestoreProvider));
 });
 
 final authStateProvider = StreamProvider<User?>((ref) {

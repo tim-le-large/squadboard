@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../config/demo_config.dart';
 import '../providers/core_providers.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -51,6 +52,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
       } else {
         await repo.signIn(email, password);
+      }
+    } catch (error) {
+      if (mounted) setState(() => _errorMessage = error.toString());
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _tryDemo() async {
+    if (!DemoConfig.isConfigured) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final repo = ref.read(authRepositoryProvider);
+
+    try {
+      await repo.signIn(DemoConfig.email, DemoConfig.password);
+
+      final user = repo.currentUser;
+      final appUser = await repo.getCurrentAppUser();
+      if (user != null) {
+        await ref.read(demoSeedRepositoryProvider).ensureDemoReady(
+              userId: user.uid,
+              displayName: appUser?.displayName ?? 'Demo',
+              workspaceRepo: ref.read(workspaceRepositoryProvider),
+              ticketRepo: ref.read(ticketRepositoryProvider),
+              chatRepo: ref.read(chatRepositoryProvider),
+            );
       }
     } catch (error) {
       if (mounted) setState(() => _errorMessage = error.toString());
@@ -159,6 +191,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             : 'New here? Create account',
                       ),
                     ),
+                    if (DemoConfig.isConfigured && !_isSignUp) ...[
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          Expanded(child: Divider(color: scheme.outlineVariant)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              'or',
+                              style: TextStyle(color: scheme.onSurfaceVariant),
+                            ),
+                          ),
+                          Expanded(child: Divider(color: scheme.outlineVariant)),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      OutlinedButton.icon(
+                        onPressed: _isLoading ? null : _tryDemo,
+                        icon: const Icon(Icons.play_circle_outline),
+                        label: const Text('Try live demo'),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Shared demo workspace — no sign-up required.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                      ),
+                    ],
                   ],
                 ),
               ),
