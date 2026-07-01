@@ -10,6 +10,7 @@ class FirebaseConfig {
   static const messagingSenderId =
       String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID');
   static const appId = String.fromEnvironment('FIREBASE_APP_ID');
+  static const vapidKey = String.fromEnvironment('FIREBASE_VAPID_KEY');
 
   static bool get isConfigured =>
       apiKey.isNotEmpty &&

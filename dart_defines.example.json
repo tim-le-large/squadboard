@@ -5,6 +5,7 @@
   "FIREBASE_STORAGE_BUCKET": "your-project.appspot.com",
   "FIREBASE_MESSAGING_SENDER_ID": "123456789",
   "FIREBASE_APP_ID": "1:123456789:web:abcdef",
+  "FIREBASE_VAPID_KEY": "your-web-push-vapid-key",
   "DEMO_EMAIL": "demo@squadboard.lelarge.dev",
   "DEMO_PASSWORD": "SquadBoardDemo2026!"
 }

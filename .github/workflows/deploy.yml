@@ -36,6 +36,7 @@ jobs:
             --dart-define=FIREBASE_STORAGE_BUCKET="${{ secrets.FIREBASE_STORAGE_BUCKET }}" \
             --dart-define=FIREBASE_MESSAGING_SENDER_ID="${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" \
             --dart-define=FIREBASE_APP_ID="${{ secrets.FIREBASE_APP_ID }}" \
+            --dart-define=FIREBASE_VAPID_KEY="${{ secrets.FIREBASE_VAPID_KEY }}" \
             --dart-define=DEMO_EMAIL="${{ secrets.DEMO_EMAIL }}" \
             --dart-define=DEMO_PASSWORD="${{ secrets.DEMO_PASSWORD }}"
 

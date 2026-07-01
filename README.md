@@ -12,6 +12,7 @@ Team workspace with **Kanban tickets** and **live team chat** — built with Flu
 - Tickets with title, description, priority, assignee
 - Ticket comments (thread per ticket)
 - Real-time team chat (Firestore snapshots)
+- **FCM push notifications** for new chat messages and ticket assignments
 - Security rules: workspace members only
 - **Live demo** button (shared workspace, auto-seeded)
 
@@ -54,6 +55,19 @@ Create once in **Firebase Auth**:
 
 Add `DEMO_EMAIL` and `DEMO_PASSWORD` to `dart_defines.json`. **Try live demo** signs in and seeds tickets + chat if the workspace is empty.
 
+### Push notifications (FCM)
+
+1. Firebase Console → **Project settings** → **Cloud Messaging** → **Web Push certificates** → generate key pair
+2. Add `FIREBASE_VAPID_KEY` to `dart_defines.json` and GitHub Actions secrets
+3. Deploy Cloud Functions (requires Blaze plan):
+   ```bash
+   cd firebase/functions && npm install && cd ../..
+   firebase deploy --only functions
+   ```
+4. In the app, tap the **bell icon** to enable notifications (browser permission on web)
+
+Triggers: new team chat message → notify other members; ticket assigned → notify assignee.
+
 ### 3. Try it
 
 1. Sign up → create a workspace → copy invite code
@@ -68,17 +82,17 @@ Add `DEMO_EMAIL` and `DEMO_PASSWORD` to `dart_defines.json`. **Try live demo** s
 | State | Riverpod |
 | Auth | Firebase Auth |
 | Database | Cloud Firestore (realtime) |
+| Push | Firebase Cloud Messaging + Cloud Functions |
 | Deploy | GitHub Pages |
 
 ## Deploy (GitHub Pages)
 
 See **[DEPLOY.md](DEPLOY.md)**.
 
-GitHub Actions secrets: `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_APP_ID`
+GitHub Actions secrets: `FIREBASE_*`, `FIREBASE_VAPID_KEY`, `DEMO_EMAIL`, `DEMO_PASSWORD`
 
 ## Roadmap
 
-- FCM push notifications on assignment / mention
 - @mentions in chat
 - Activity feed
 - Multiple boards per workspace

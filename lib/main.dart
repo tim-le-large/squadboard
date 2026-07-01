@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'config/firebase_config.dart';
 import 'screens/auth_gate.dart';
+import 'services/push_notification_service.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
@@ -11,6 +13,7 @@ Future<void> main() async {
 
   if (FirebaseConfig.isConfigured) {
     await Firebase.initializeApp(options: FirebaseConfig.options);
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
 
   runApp(const ProviderScope(child: SquadBoardApp()));

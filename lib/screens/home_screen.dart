@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/core_providers.dart';
+import '../services/push_notification_service.dart';
 import 'board_screen.dart';
 import 'chat_screen.dart';
 
@@ -15,9 +16,66 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _tabIndex = 0;
+  bool _pushEnabled = false;
+  bool _pushLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref.read(pushNotificationServiceProvider).initialize(ref);
+      final enabled =
+          await ref.read(pushNotificationServiceProvider).areNotificationsEnabled();
+      if (mounted) setState(() => _pushEnabled = enabled);
+    });
+  }
+
+  Future<void> _togglePushNotifications() async {
+    setState(() => _pushLoading = true);
+    final push = ref.read(pushNotificationServiceProvider);
+
+    try {
+      if (_pushEnabled) {
+        await push.removeTokenForCurrentUser();
+        if (mounted) {
+          setState(() => _pushEnabled = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Push notifications disabled')),
+          );
+        }
+      } else {
+        final granted = await push.requestPermissionAndSync();
+        if (mounted) {
+          setState(() => _pushEnabled = granted);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                granted
+                    ? 'Push notifications enabled'
+                    : 'Permission denied — enable in browser settings',
+              ),
+            ),
+          );
+        }
+      }
+    } finally {
+      if (mounted) setState(() => _pushLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<PushBanner?>(pushBannerProvider, (previous, next) {
+      if (next == null || !mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${next.title}: ${next.body}'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      ref.read(pushBannerProvider.notifier).state = null;
+    });
+
     final workspaceAsync = ref.watch(workspaceProvider);
     final appUser = ref.watch(appUserProvider).valueOrNull;
 
@@ -50,6 +108,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
             actions: [
+              if (PushNotificationService.isAvailable)
+                IconButton(
+                  tooltip: _pushEnabled
+                      ? 'Disable push notifications'
+                      : 'Enable push notifications',
+                  onPressed: _pushLoading ? null : _togglePushNotifications,
+                  icon: Icon(
+                    _pushEnabled
+                        ? Icons.notifications_active
+                        : Icons.notifications_none,
+                  ),
+                ),
               IconButton(
                 tooltip: 'Copy invite code',
                 onPressed: () {
@@ -65,6 +135,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               PopupMenuButton<String>(
                 onSelected: (value) async {
                   if (value == 'logout') {
+                    if (PushNotificationService.isAvailable) {
+                      await ref
+                          .read(pushNotificationServiceProvider)
+                          .removeTokenForCurrentUser();
+                    }
                     await ref.read(authRepositoryProvider).signOut();
                   }
                 },

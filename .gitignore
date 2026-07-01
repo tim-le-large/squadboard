@@ -46,3 +46,4 @@ dart_defines.json
 node_modules/
 package-lock.json
 package.json
+firebase/functions/node_modules/

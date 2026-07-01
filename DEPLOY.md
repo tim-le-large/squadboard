@@ -18,6 +18,20 @@ Repository → Settings → Secrets and variables → Actions:
 | `FIREBASE_STORAGE_BUCKET` | storageBucket |
 | `FIREBASE_MESSAGING_SENDER_ID` | messagingSenderId |
 | `FIREBASE_APP_ID` | appId |
+| `FIREBASE_VAPID_KEY` | Web Push key pair (Cloud Messaging) |
+| `DEMO_EMAIL` | Demo account email |
+| `DEMO_PASSWORD` | Demo account password |
+
+## Push notifications
+
+1. Firebase Console → Project settings → Cloud Messaging → **Web Push certificates** → Generate key pair → copy as `FIREBASE_VAPID_KEY`
+2. Deploy Cloud Functions (Blaze plan required):
+   ```bash
+   firebase login
+   cd firebase/functions && npm install && cd ../..
+   firebase deploy --only functions
+   ```
+3. Users enable push via the **bell icon** in the app toolbar.
 
 ## 2. Enable GitHub Pages
 
