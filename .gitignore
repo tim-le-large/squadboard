@@ -42,6 +42,9 @@ app.*.map.json
 # Local Firebase credentials (copy dart_defines.example.json)
 dart_defines.json
 
+# Generated at build time — contains Firebase web config
+web/firebase-messaging-sw.js
+
 # Local npm (firebase-tools); use global install instead
 node_modules/
 package-lock.json

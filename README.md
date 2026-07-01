@@ -85,6 +85,7 @@ cp dart_defines.example.json dart_defines.json
 
 ```bash
 flutter pub get
+bash scripts/generate-messaging-sw.sh   # web push worker (from dart_defines.json)
 flutter run -d chrome --dart-define-from-file=dart_defines.json
 ```
 

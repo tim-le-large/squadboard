@@ -33,6 +33,19 @@ Repository → Settings → Secrets and variables → Actions:
    ```
 3. Users enable push via the **bell icon** in the app toolbar.
 
+`web/firebase-messaging-sw.js` is **generated** at build time from `web/firebase-messaging-sw.template.js` — do not commit real API keys.
+
+## Exposed API key (secret scanning)
+
+If GitHub flagged a Google/Firebase API key in git history:
+
+1. **Restrict the key** — [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → your Browser key → **Application restrictions** → HTTP referrers:
+   - `https://squadboard.lelarge.dev/*`
+   - `http://localhost:*`
+2. **Optional: rotate** — create a new Browser API key, update Firebase web app config, GitHub Actions secrets, and `dart_defines.json`, then delete the old key.
+3. **Repo fix** — only the template is tracked; CI runs `scripts/generate-messaging-sw.sh` before `flutter build web`.
+4. Mark the GitHub alert as **revoked/resolved** after restricting or rotating.
+
 ## 2. Enable GitHub Pages
 
 Settings → Pages → Source: **GitHub Actions**

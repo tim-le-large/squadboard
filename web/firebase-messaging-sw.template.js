@@ -6,12 +6,12 @@ importScripts(
 );
 
 firebase.initializeApp({
-  apiKey: 'AIzaSyDBzRQvSjobGENfSAJr-3-hP5A_7hLfLyE',
-  authDomain: 'squadboard-83ed4.firebaseapp.com',
-  projectId: 'squadboard-83ed4',
-  storageBucket: 'squadboard-83ed4.firebasestorage.app',
-  messagingSenderId: '74934708586',
-  appId: '1:74934708586:web:e9d9d97b3f308cd0541d13',
+  apiKey: '__FIREBASE_API_KEY__',
+  authDomain: '__FIREBASE_AUTH_DOMAIN__',
+  projectId: '__FIREBASE_PROJECT_ID__',
+  storageBucket: '__FIREBASE_STORAGE_BUCKET__',
+  messagingSenderId: '__FIREBASE_MESSAGING_SENDER_ID__',
+  appId: '__FIREBASE_APP_ID__',
 });
 
 const messaging = firebase.messaging();
