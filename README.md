@@ -139,6 +139,23 @@ Required secrets: `FIREBASE_*`, `FIREBASE_VAPID_KEY`, `DEMO_EMAIL`, `DEMO_PASSWO
 
 ---
 
+## Tests
+
+```bash
+flutter test
+```
+
+| File | Covers |
+|------|--------|
+| `test/tickets_provider_test.dart` | Kanban column filter + sort |
+| `test/ticket_status_test.dart` | Status/priority parsing |
+| `test/demo_data_test.dart` | Multi-user demo seed + `resolveDemoMember` |
+| `test/widget_test.dart` | App boots without Firebase config |
+
+Tests run in CI before every GitHub Pages deploy.
+
+---
+
 ## Roadmap
 
 - @mentions in chat
