@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/ticket.dart';
 import '../models/ticket_status.dart';
-import 'ticket_card.dart';
+import 'kanban_draggable_ticket.dart';
 
 class KanbanColumn extends StatelessWidget {
   const KanbanColumn({
@@ -11,38 +11,47 @@ class KanbanColumn extends StatelessWidget {
     required this.tickets,
     required this.onTicketTap,
     required this.onTicketDropped,
+    this.isDragging = false,
+    this.onDragStarted,
+    this.onDragEnd,
   });
 
   final TicketStatus status;
   final List<Ticket> tickets;
   final void Function(Ticket ticket) onTicketTap;
   final void Function(Ticket ticket, TicketStatus newStatus) onTicketDropped;
+  final bool isDragging;
+  final VoidCallback? onDragStarted;
+  final VoidCallback? onDragEnd;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
     return DragTarget<Ticket>(
-      onWillAcceptWithDetails: (_) => true,
+      onWillAcceptWithDetails: (details) =>
+          details.data.status != status,
       onAcceptWithDetails: (details) {
         onTicketDropped(details.data, status);
       },
       builder: (context, candidateData, rejectedData) {
         final isHighlighted = candidateData.isNotEmpty;
 
-        return Container(
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
           width: 300,
           margin: const EdgeInsets.only(right: 16),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isHighlighted
-                ? scheme.primaryContainer.withValues(alpha: 0.3)
+                ? scheme.primaryContainer.withValues(alpha: 0.35)
                 : scheme.surfaceContainerHighest.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isHighlighted
                   ? scheme.primary
                   : scheme.outlineVariant.withValues(alpha: 0.5),
+              width: isHighlighted ? 2 : 1,
             ),
           ),
           child: Column(
@@ -78,33 +87,17 @@ class KanbanColumn extends StatelessWidget {
               const SizedBox(height: 12),
               Expanded(
                 child: ListView.builder(
+                  physics: isDragging
+                      ? const NeverScrollableScrollPhysics()
+                      : const ClampingScrollPhysics(),
                   itemCount: tickets.length,
                   itemBuilder: (context, index) {
                     final ticket = tickets[index];
-                    return LongPressDraggable<Ticket>(
-                      data: ticket,
-                      feedback: Material(
-                        elevation: 8,
-                        borderRadius: BorderRadius.circular(12),
-                        child: SizedBox(
-                          width: 260,
-                          child: TicketCard(
-                            ticket: ticket,
-                            onTap: () {},
-                          ),
-                        ),
-                      ),
-                      childWhenDragging: Opacity(
-                        opacity: 0.4,
-                        child: TicketCard(
-                          ticket: ticket,
-                          onTap: () => onTicketTap(ticket),
-                        ),
-                      ),
-                      child: TicketCard(
-                        ticket: ticket,
-                        onTap: () => onTicketTap(ticket),
-                      ),
+                    return KanbanDraggableTicket(
+                      ticket: ticket,
+                      onTap: () => onTicketTap(ticket),
+                      onDragStarted: onDragStarted,
+                      onDragEnd: onDragEnd,
                     );
                   },
                 ),

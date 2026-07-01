@@ -42,7 +42,10 @@ final chatRepositoryProvider = Provider<ChatRepository>((ref) {
 });
 
 final demoSeedRepositoryProvider = Provider<DemoSeedRepository>((ref) {
-  return DemoSeedRepository(ref.watch(firestoreProvider));
+  return DemoSeedRepository(
+    ref.watch(firestoreProvider),
+    ref.watch(firebaseAuthProvider),
+  );
 });
 
 final authStateProvider = StreamProvider<User?>((ref) {

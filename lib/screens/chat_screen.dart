@@ -43,6 +43,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
+  Color _avatarColor(String userId) {
+    return HSLColor.fromAHSL(
+      1,
+      (userId.hashCode % 360).abs().toDouble(),
+      0.55,
+      0.45,
+    ).toColor();
+  }
+
   Future<void> _sendMessage() async {
     final body = _messageController.text.trim();
     if (body.isEmpty) return;
@@ -138,12 +147,30 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (!isMine)
-                            Text(
-                              message.userName,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircleAvatar(
+                                  radius: 10,
+                                  backgroundColor: _avatarColor(message.userId),
+                                  child: Text(
+                                    message.userName.substring(0, 1).toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  message.userName,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           Text(message.body),
                           const SizedBox(height: 4),

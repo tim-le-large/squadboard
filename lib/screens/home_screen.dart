@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../config/demo_config.dart';
 import '../providers/core_providers.dart';
 import '../services/push_notification_service.dart';
 import 'board_screen.dart';
@@ -23,6 +24,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final user = ref.read(authRepositoryProvider).currentUser;
+      if (user != null &&
+          DemoConfig.isConfigured &&
+          user.email == DemoConfig.email) {
+        await ref.read(demoSeedRepositoryProvider).ensureDemoReady(
+              userId: user.uid,
+              displayName: user.displayName ?? 'Demo User',
+              workspaceRepo: ref.read(workspaceRepositoryProvider),
+              ticketRepo: ref.read(ticketRepositoryProvider),
+            );
+      }
+
       await ref.read(pushNotificationServiceProvider).initialize(ref);
       final enabled =
           await ref.read(pushNotificationServiceProvider).areNotificationsEnabled();

@@ -81,7 +81,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               displayName: appUser?.displayName ?? 'Demo',
               workspaceRepo: ref.read(workspaceRepositoryProvider),
               ticketRepo: ref.read(ticketRepositoryProvider),
-              chatRepo: ref.read(chatRepositoryProvider),
             );
       }
     } catch (error) {

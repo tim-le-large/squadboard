@@ -9,13 +9,19 @@ import '../widgets/kanban_column.dart';
 import 'add_ticket_sheet.dart';
 import 'ticket_detail_screen.dart';
 
-class BoardScreen extends ConsumerWidget {
+class BoardScreen extends ConsumerStatefulWidget {
   const BoardScreen({super.key, required this.workspace});
 
   final Workspace workspace;
 
+  @override
+  ConsumerState<BoardScreen> createState() => _BoardScreenState();
+}
+
+class _BoardScreenState extends ConsumerState<BoardScreen> {
+  bool _isDragging = false;
+
   Future<void> _onTicketDropped(
-    WidgetRef ref,
     Ticket ticket,
     TicketStatus newStatus,
     List<Ticket> allTickets,
@@ -34,8 +40,16 @@ class BoardScreen extends ConsumerWidget {
         );
   }
 
+  void _onDragStarted() {
+    if (!_isDragging) setState(() => _isDragging = true);
+  }
+
+  void _onDragEnded() {
+    if (_isDragging) setState(() => _isDragging = false);
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final ticketsAsync = ref.watch(ticketsProvider);
 
     return ticketsAsync.when(
@@ -48,6 +62,9 @@ class BoardScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
+                physics: _isDragging
+                    ? const NeverScrollableScrollPhysics()
+                    : const BouncingScrollPhysics(),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: TicketStatus.values.map((status) {
@@ -57,18 +74,21 @@ class BoardScreen extends ConsumerWidget {
                       child: KanbanColumn(
                         status: status,
                         tickets: columnTickets,
+                        isDragging: _isDragging,
+                        onDragStarted: _onDragStarted,
+                        onDragEnd: _onDragEnded,
                         onTicketTap: (ticket) {
                           Navigator.of(context).push(
                             MaterialPageRoute<void>(
                               builder: (_) => TicketDetailScreen(
-                                workspace: workspace,
+                                workspace: widget.workspace,
                                 ticket: ticket,
                               ),
                             ),
                           );
                         },
                         onTicketDropped: (ticket, newStatus) {
-                          _onTicketDropped(ref, ticket, newStatus, tickets);
+                          _onTicketDropped(ticket, newStatus, tickets);
                         },
                       ),
                     );
@@ -84,7 +104,7 @@ class BoardScreen extends ConsumerWidget {
                   showModalBottomSheet<void>(
                     context: context,
                     isScrollControlled: true,
-                    builder: (_) => AddTicketSheet(workspace: workspace),
+                    builder: (_) => AddTicketSheet(workspace: widget.workspace),
                   );
                 },
                 icon: const Icon(Icons.add),
