@@ -2,7 +2,7 @@
 
 Team workspace with **Kanban tickets** and **live team chat** — built with Flutter and Firebase.
 
-**Live:** [squad.lelarge.dev](https://squad.lelarge.dev)
+**Live:** [squadboard.lelarge.dev](https://squadboard.lelarge.dev)
 
 ## Features
 

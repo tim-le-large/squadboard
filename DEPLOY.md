@@ -4,7 +4,7 @@
 
 - GitHub repo `tim-le-large/squadboard` (or your fork)
 - Firebase web app configured (see README)
-- Domain `squad.lelarge.dev` (optional)
+- Domain `squadboard.lelarge.dev` (optional)
 
 ## 1. GitHub Actions secrets
 
@@ -23,21 +23,21 @@ Repository → Settings → Secrets and variables → Actions:
 
 Settings → Pages → Source: **GitHub Actions**
 
-Optional custom domain: `squad.lelarge.dev` (CNAME file is in `web/CNAME`)
+Optional custom domain: `squadboard.lelarge.dev` (CNAME file is in `web/CNAME`)
 
 ## 3. Firebase Auth authorized domains
 
 Firebase Console → Authentication → Settings → Authorized domains:
 
 - `localhost`
-- `squad.lelarge.dev`
+- `squadboard.lelarge.dev`
 - `tim-le-large.github.io` (if using default Pages URL)
 
 ## 4. DNS (Cloudflare)
 
 | Type | Name | Target |
 |------|------|--------|
-| CNAME | squad | `tim-le-large.github.io` |
+| CNAME | squadboard | `tim-le-large.github.io` |
 
 ## 5. Deploy
 
