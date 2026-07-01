@@ -13,6 +13,7 @@ Team workspace with **Kanban tickets** and **live team chat** — built with Flu
 - Ticket comments (thread per ticket)
 - Real-time team chat (Firestore snapshots)
 - Security rules: workspace members only
+- **Live demo** button (shared workspace, auto-seeded)
 
 ## Setup
 
@@ -43,6 +44,15 @@ flutter run -d chrome --dart-define-from-file=dart_defines.json
 ```
 
 Or use the **SquadBoard (Chrome)** launch config in VS Code/Cursor.
+
+### Demo account (portfolio)
+
+Create once in **Firebase Auth**:
+
+- Email: `demo@squadboard.lelarge.dev`
+- Password: `SquadBoardDemo2026!`
+
+Add `DEMO_EMAIL` and `DEMO_PASSWORD` to `dart_defines.json`. **Try live demo** signs in and seeds tickets + chat if the workspace is empty.
 
 ### 3. Try it
 
