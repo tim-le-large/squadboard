@@ -19,8 +19,8 @@ Repository → Settings → Secrets and variables → Actions:
 | `FIREBASE_MESSAGING_SENDER_ID` | messagingSenderId |
 | `FIREBASE_APP_ID` | appId |
 | `FIREBASE_VAPID_KEY` | Web Push key pair (Cloud Messaging) |
-| `DEMO_EMAIL` | Demo account email |
-| `DEMO_PASSWORD` | Demo account password |
+| `DEMO_EMAIL` | *(optional)* defaults to `demo@squadboard.lelarge.dev` |
+| `DEMO_PASSWORD` | *(optional)* defaults to portfolio demo password in `DemoConfig` |
 
 ## Push notifications
 
